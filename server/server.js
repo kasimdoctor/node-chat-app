@@ -18,6 +18,17 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log('User was disconnected');
     });
+
+    // emitting custom event so that client can intercept it
+    socket.emit('newMessage', {
+        from: 'guddu@bacchu.com',
+        text: 'Kaa chhe maara guddu',
+        createdAt: 123
+    });
+
+    socket.on('createMessage', (message) => {
+        console.log('createMessage', message);
+    });
 });
 
 server.listen(port, () => {
