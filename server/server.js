@@ -19,14 +19,36 @@ io.on('connection', (socket) => {
         console.log('User was disconnected');
     });
 
+    // send a message to the newly joined user
+    socket.emit('newUser', {
+        from: 'Admin',
+        text: 'Welcome to my chat app!',
+        createdAt: new Date().getTime()
+    });
+
+    // broadcast to everyone else that a new user has joined
+    socket.broadcast.emit('newUser', {
+        from: 'Admin',
+        text: 'New User has joined.',
+        createdAt: new Date().getTime()
+    });
+
     socket.on('createMessage', (message) => {
         console.log('createMessage', message);
-        // io.emit emits to every single connection i.e. broadcasts it
+        // io.emit emits to every single connection including the one who sent it
         io.emit('newMessage', {
             from: message.from,
             text: message.text,
             createdAt: new Date().getTime()
-        })
+        });
+
+        // socket.broadcast broadcasts it to everyone except the sender
+        // socket.broadcast.emit('newMessage', {
+        //     from: message.from,
+        //     text: message.text,
+        //     createdAt: new Date().getTime()
+        // });
+
     });
 });
 
