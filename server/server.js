@@ -19,15 +19,14 @@ io.on('connection', (socket) => {
         console.log('User was disconnected');
     });
 
-    // emitting custom event so that client can intercept it
-    socket.emit('newMessage', {
-        from: 'guddu@bacchu.com',
-        text: 'Kaa chhe maara guddu',
-        createdAt: 123
-    });
-
     socket.on('createMessage', (message) => {
         console.log('createMessage', message);
+        // io.emit emits to every single connection i.e. broadcasts it
+        io.emit('newMessage', {
+            from: message.from,
+            text: message.text,
+            createdAt: new Date().getTime()
+        })
     });
 });
 
