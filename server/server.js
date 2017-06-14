@@ -26,11 +26,13 @@ io.on('connection', (socket) => {
     // broadcast to everyone else that a new user has joined
     socket.broadcast.emit('newUser', generateMessage('Admin', 'New User has joined.'));
 
-    socket.on('createMessage', (message) => {
+    socket.on('createMessage', (message, callback) => {
         console.log('createMessage', message);
         // io.emit emits to every single connection including the one who sent it
         io.emit('newMessage', generateMessage(message.from, message.text));
 
+        // call a callback sending an ack to the client
+        callback('This is from your server');
         // socket.broadcast broadcasts it to everyone except the sender
         // socket.broadcast.emit('newMessage', {
         //     from: message.from,
