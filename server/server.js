@@ -3,7 +3,7 @@ const path = require('path');
 const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
-const {generateMessage} = require('./utils/message');
+const {generateMessage, generateLocationMessage} = require('./utils/message');
 
 const publicPath = path.join(__dirname, '../public');
 
@@ -21,10 +21,10 @@ io.on('connection', (socket) => {
     });
 
     // send a message to the newly joined user
-    socket.emit('newUser', generateMessage('Admin', 'Welcome to my chat app!'));
+    socket.emit('newMessage', generateMessage('Admin', 'Welcome to my chat app!'));
 
     // broadcast to everyone else that a new user has joined
-    socket.broadcast.emit('newUser', generateMessage('Admin', 'New User has joined.'));
+    socket.broadcast.emit('newMessage', generateMessage('Admin', 'New User has joined.'));
 
     socket.on('createMessage', (message, callback) => {
         console.log('createMessage', message);
@@ -33,13 +33,10 @@ io.on('connection', (socket) => {
 
         // call a callback sending an ack to the client
         callback('This is from your server');
-        // socket.broadcast broadcasts it to everyone except the sender
-        // socket.broadcast.emit('newMessage', {
-        //     from: message.from,
-        //     text: message.text,
-        //     createdAt: new Date().getTime()
-        // });
+    });
 
+    socket.on('createLocationMessage', (coords) => {
+        io.emit('newLocationMessage', generateLocationMessage('Admin', coords.latitude, coords.longitude));
     });
 });
 
