@@ -32,7 +32,7 @@ io.on('connection', (socket) => {
         io.emit('newMessage', generateMessage(message.from, message.text));
 
         // call a callback sending an ack to the client
-        callback('This is from your server');
+        callback();
     });
 
     socket.on('createLocationMessage', (coords) => {
